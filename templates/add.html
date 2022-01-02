@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="https://newcss.net/lite.css">
+    <style>
+      input {
+        width: 100%;
+      }
+      </style>
     <script>
       window.onload = function() {
         if (navigator.geolocation) {
@@ -25,12 +30,16 @@
     </label>
     <br>
       <label>Title  
-      <input name="title" required />
+      <input name="title" autocomplete="off" required />
     </label>  
-      <input id="latitude" name="latitude" />
-      <input id="longitude" name="longitude" />
+    <br>
+      <label>Latitude<input id="latitude" name="latitude" /></label>
+    <br>
+      <label>Longitude<input id="longitude" name="longitude" /></label>
       <br>
       <input type="submit" />
     </form>
+
+    <p><strong>Data retention</strong> is one day, 24 hours.</p>
   </body>
 </html>
