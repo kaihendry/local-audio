@@ -7,6 +7,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"time"
 
@@ -20,6 +21,17 @@ type Point struct {
 	lat float64
 	lng float64
 }
+
+type AudioPerspective struct {
+	Records      []Record
+	UserLocation Point
+}
+
+func (a AudioPerspective) Len() int { return len(a.Records) }
+func (a AudioPerspective) Less(i, j int) bool {
+	return a.Records[i].Distance(a.UserLocation) < a.Records[j].Distance(a.UserLocation)
+}
+func (a AudioPerspective) Swap(i, j int) { a.Records[i], a.Records[j] = a.Records[j], a.Records[i] }
 
 //go:embed templates
 var tmpl embed.FS
@@ -92,12 +104,19 @@ func (s *server) index() http.HandlerFunc {
 
 		log.WithField("count", len(selection)).Info("parsed records")
 
+		a := AudioPerspective{
+			Records:      selection,
+			UserLocation: Point{lat, lng},
+		}
+
+		sort.Sort(a)
+
 		w.Header().Set("Content-Type", "text/html")
 		err = t.ExecuteTemplate(w, "index.html", struct {
 			Selection    []Record
 			UserLocation Point
 		}{
-			selection,
+			a.Records,
 			Point{lat, lng},
 		})
 		if err != nil {
