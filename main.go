@@ -31,38 +31,6 @@ type server struct {
 	store  *s3.Client
 }
 
-func (record *Record) TimeSinceCreation() string {
-	return time.Since(record.Created).String()
-}
-
-func (record *Record) Distance(lat, lng float64) (distance float64) {
-
-	latd := lat - record.Latitude
-	log.WithFields(log.Fields{
-		"lat":        lat,
-		"record.lat": record.Latitude,
-		"latd":       latd,
-	}).Info("computing horizontal distance")
-	lngd := lng - record.Longitude
-	log.WithFields(log.Fields{
-		"lng":        lng,
-		"record.lng": record.Longitude,
-		"lngd":       lngd,
-	}).Info("computing vertical distance")
-
-	distance = latd*latd + lngd*lngd
-
-	log.WithFields(log.Fields{
-		"dist": distance,
-	}).Info("calculating distance")
-
-	return
-}
-
-func (record *Record) TimeUntilExpiry() string {
-	return time.Until(record.Expires).String()
-}
-
 // Routes are defined here
 func newServer(local bool) *server {
 	s := &server{router: &http.ServeMux{}}

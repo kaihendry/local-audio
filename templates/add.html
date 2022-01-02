@@ -5,8 +5,7 @@
     <title>Upload Local audio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
-
+    <link rel="stylesheet" href="https://newcss.net/lite.css">
     <script>
       window.onload = function() {
         if (navigator.geolocation) {
@@ -24,11 +23,13 @@
       <label>Audio
       <input type="file" name="audio" required />
     </label>
+    <br>
       <label>Title  
       <input name="title" required />
-    </label>
-      <input id="latitude" type="hidden" name="latitude" />
-      <input id="longitude" type="hidden" name="longitude" />
+    </label>  
+      <input id="latitude" name="latitude" />
+      <input id="longitude" name="longitude" />
+      <br>
       <input type="submit" />
     </form>
   </body>

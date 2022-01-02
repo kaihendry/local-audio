@@ -75,7 +75,7 @@ func (s *server) add() http.HandlerFunc {
 
 		rec.ID = r.RemoteAddr
 		rec.Created = time.Now()
-		rec.Expires = rec.Created.Add(time.Hour)
+		// rec.Expires = rec.Created.Add(time.Hour)
 
 		// https://aws.github.io/aws-sdk-go-v2/docs/sdk-utilities/s3/
 		// Upload the audio file to S3 client s.store and get the url

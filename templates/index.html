@@ -2,7 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+    <link rel="stylesheet" href="https://newcss.net/lite.css">
+    <style>
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+    </style>
     <title>Local audio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," />
@@ -24,18 +30,35 @@
 
   <body>
 
-    <ol>
+    <table>
+      <thead>
+        <td>Audio</td>
+        <td>Author</td>
+        <td>Title</td>
+        <td>Distance (m)</td>
+        <td>Uploaded (mins)</td>
+      </thead>
+      <tbody>
       {{range .Selection -}}
-      <li>
+      <tr>
+        <td>
         <audio controls>
           <source src="{{ .Audio }}" type="audio/x-m4a" />
-        </audio>
-        Author: {{ .ID }} - Distance: {{ .Distance .Latitude .Longitude }} - Title: {{ .Title }} - Latitude: {{ .Latitude }} - Longitude {{ .Longitude }} - Created: {{.TimeSinceCreation }} ago
-      </li>
+        </audio> 
+        </td>
+        <td>{{ .ID }}</td>
+        <td>{{ .Title }}</td>
+        <td>{{- if $.UserLocation -}}
+          {{ printf "%.0f" (.Distance $.UserLocation) }}
+          {{- end }}</td>
+        <td>{{.TimeSinceCreation }}m ago</td>
+      </tr>
       {{ end }}
-    </ol>
+    </tbody>
+    </table>
 
     <p><a href="/add">Add a recording</a></p>
+    <p><a href="https://github.com/kaihendry/local-audio">Source code</a></p>
 
   </body>
 </html>
