@@ -5,18 +5,20 @@
     <title>Upload Local audio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="https://newcss.net/lite.css">
+    <link rel="stylesheet" href="https://newcss.net/lite.css" />
     <style>
       input {
         width: 100%;
       }
-      </style>
+    </style>
     <script>
-      window.onload = function() {
+      window.onload = function () {
         if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            document.getElementById("latitude").value = position.coords.latitude;
-            document.getElementById("longitude").value = position.coords.longitude;
+          navigator.geolocation.getCurrentPosition(function (position) {
+            document.getElementById("latitude").value =
+              position.coords.latitude;
+            document.getElementById("longitude").value =
+              position.coords.longitude;
           });
         }
       };
@@ -25,21 +27,31 @@
 
   <body>
     <form action="/add" method="POST" enctype="multipart/form-data">
-      <label>Audio
-      <input type="file" name="audio" required />
-    </label>
-    <br>
-      <label>Title  
-      <input name="title" autocomplete="off" required />
-    </label>  
-    <br>
+      <label
+        >Audio
+        <input type="file" name="audio" required />
+        <!-- accept="audio/*" does not work on Safari 15 -->
+        <!-- "capture" launches camera on Safari 15 -->
+      </label>
+      <br />
+      <label
+        >Title
+        <input name="title" autocomplete="off" required />
+      </label>
+      <br />
       <label>Latitude<input id="latitude" name="latitude" /></label>
-    <br>
+      <br />
       <label>Longitude<input id="longitude" name="longitude" /></label>
-      <br>
+      <br />
       <input type="submit" />
     </form>
 
-    <p><strong>Data retention</strong> is one day, 24 hours.</p>
+    <dl>
+      <dt>Data retention</dt>
+      <dd>One day, 24 hours.</dd>
+      <dt>User Agent</dt>
+      <!-- look up user-agent from .Header -->
+      <dd>{{ index .Header "User-Agent" }}</dd>
+    </dl>
   </body>
 </html>

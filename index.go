@@ -39,7 +39,6 @@ var tmpl embed.FS
 func (record *Record) TimeSinceCreation() int {
 	// return minutes since created
 	return int(time.Since(record.Created).Minutes())
-
 }
 
 func hsin(theta float64) float64 {

@@ -12,6 +12,7 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       TimeToLiveSpecification:
+        # data rentention is one day, implemented in add.go
         Enabled: true
         AttributeName: expires
       AttributeDefinitions:
@@ -28,7 +29,8 @@ Resources:
 
   RootBucket:
     Type: AWS::S3::Bucket
-    Properties: # data retention is one day
+    Properties:
+      # data retention is one day
       LifecycleConfiguration:
         Rules:
           - ExpirationInDays: 1
@@ -45,7 +47,7 @@ Resources:
       CodeUri: .
       Handler: main
       Runtime: provided.al2
-      Policies: 
+      Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref RecordsTable
         - S3CrudPolicy:
@@ -74,4 +76,3 @@ Resources:
 Outputs:
   GatewayEndPoint:
     Value: !Sub "https://${Gateway}.execute-api.${AWS::Region}.amazonaws.com/"
-  

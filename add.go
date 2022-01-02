@@ -29,7 +29,11 @@ func (s *server) add() http.HandlerFunc {
 			}
 
 			w.Header().Set("Content-Type", "text/html")
-			err = t.ExecuteTemplate(w, "add.html", struct{}{})
+			err = t.ExecuteTemplate(w, "add.html", struct {
+				Header http.Header
+			}{
+				Header: r.Header,
+			})
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				log.WithError(err).Fatal("Failed to execute templates")
@@ -42,13 +46,14 @@ func (s *server) add() http.HandlerFunc {
 		// parse body to a record
 		var rec Record
 
+		// limit upload size to 10MB
+		r.Body = http.MaxBytesReader(w, r.Body, 10*1024*1024)
+
 		err := r.ParseForm()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-
-		log.Debug("parsed form")
 
 		audioFile, header, err := r.FormFile("audio")
 		if err != nil {
