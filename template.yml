@@ -28,7 +28,11 @@ Resources:
 
   RootBucket:
     Type: AWS::S3::Bucket
-    Properties:
+    Properties: # data retention is one day
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 1
+            Status: Enabled
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: 404.html

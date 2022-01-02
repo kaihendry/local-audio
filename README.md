@@ -1,12 +1,17 @@
-Goal: Demonstrate how to develop an AWS hosted dynamodb Web application locally
+Goal: Proof of concept for a Web Audio walk platform
 
-Runs under an AWS_PROFILE called "mine", you will have to change that to yours when deploying to your AWS account.
+# Data retention
 
-Start dynamodb server
+* dynamdo db "time to live" expires in 1 day from creation of record set in add.go
+* s3 lifecycle rule of 1 day in cloudformation template.yml
+
+# Start dynamodb server
 
     ./scripts/local-dynamodb.sh
     ./scripts/create-table.sh
 
-Start Go Web server
+# Start Go Web server
 
-    ./scripts/start-local-server.sh
+You need to setup the BUCKET_NAME to your own bucket!
+
+    BUCKET_NAME=local-audio-test TABLE_NAME=Records gin --all
