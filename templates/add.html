@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Upload Local audio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+
+    <script>
+      window.onload = function() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            document.getElementById("latitude").value = position.coords.latitude;
+            document.getElementById("longitude").value = position.coords.longitude;
+          });
+        }
+      };
+    </script>
+  </head>
+
+  <body>
+    <form action="/add" method="POST" enctype="multipart/form-data">
+      <label>Audio
+      <input type="file" name="audio" required />
+    </label>
+      <label>Title  
+      <input name="title" required />
+    </label>
+      <input id="latitude" type="hidden" name="latitude" />
+      <input id="longitude" type="hidden" name="longitude" />
+      <input type="submit" />
+    </form>
+  </body>
+</html>

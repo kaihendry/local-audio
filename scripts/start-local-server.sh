@@ -1,2 +1,2 @@
 #!/bin/sh
-TABLE_NAME=Records gin --all
+BUCKET_NAME=local-audio-test TABLE_NAME=Records gin --all

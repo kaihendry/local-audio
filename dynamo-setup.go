@@ -22,7 +22,6 @@ func dynamoCloud() *dynamodb.Client {
 
 func dynamoLocal() *dynamodb.Client {
 	cfg, err := config.LoadDefaultConfig(context.TODO(), func(o *config.LoadOptions) error {
-		o.SharedConfigProfile = "mine"
 		return nil
 	})
 	if err != nil {

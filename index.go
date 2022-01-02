@@ -16,7 +16,7 @@ import (
 //go:embed templates
 var tmpl embed.FS
 
-func (s *server) list() http.HandlerFunc {
+func (s *server) index() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Info("list")
 
@@ -26,7 +26,7 @@ func (s *server) list() http.HandlerFunc {
 		}
 
 		// https://aws.github.io/aws-sdk-go-v2/docs/code-examples/dynamodb/scanitems/
-		records, err := s.client.Scan(context.TODO(), &dynamodb.ScanInput{
+		records, err := s.db.Scan(context.TODO(), &dynamodb.ScanInput{
 			TableName: aws.String(os.Getenv("TABLE_NAME")),
 		})
 		if err != nil {

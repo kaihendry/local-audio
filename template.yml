@@ -26,13 +26,12 @@ Resources:
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
 
-
-  Gateway:
-    Type: AWS::Serverless::HttpApi
+  RootBucket:
+    Type: AWS::S3::Bucket
     Properties:
-      Domain:
-        DomainName: !Ref DomainName
-        CertificateArn: !Ref ACMCertificateArn
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: 404.html
 
   MainFunction:
     Type: AWS::Serverless::Function
@@ -42,10 +41,15 @@ Resources:
       CodeUri: .
       Handler: main
       Runtime: provided.al2
-      Policies: AmazonDynamoDBFullAccess
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RecordsTable
+        - S3CrudPolicy:
+            BucketName: !Ref RootBucket
       Environment:
         Variables:
           TABLE_NAME: !Ref RecordsTable
+          BUCKET_NAME: !Ref RootBucket
       Events:
         CatchAll:
           Type: HttpApi
@@ -56,6 +60,14 @@ Resources:
     Metadata:
       BuildMethod: makefile
 
+  Gateway:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      Domain:
+        DomainName: !Ref DomainName
+        CertificateArn: !Ref ACMCertificateArn
+
 Outputs:
   GatewayEndPoint:
     Value: !Sub "https://${Gateway}.execute-api.${AWS::Region}.amazonaws.com/"
+  
