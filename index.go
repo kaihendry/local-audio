@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 type Point struct {
@@ -88,6 +89,22 @@ func (s *server) index() http.HandlerFunc {
 		err = attributevalue.UnmarshalListOfMaps(records.Items, &selection)
 		if err != nil {
 			log.WithError(err).Fatal("couldn't parse records")
+		}
+
+		psClient := s3.NewPresignClient(s.store)
+
+		// range through selection and generate presigned urls
+		// idea here is to limit the vector for abuse of /add input=file
+		for i := range selection {
+			resp, err := psClient.PresignGetObject(context.TODO(), &s3.GetObjectInput{
+				Bucket: aws.String(os.Getenv("BUCKET_NAME")),
+				Key:    aws.String(selection[i].Audio),
+			})
+			if err != nil {
+				log.WithError(err).WithField("key", selection[i].Audio).Warn("couldn't generate presigned url")
+			} else {
+				selection[i].Audio = resp.URL
+			}
 		}
 
 		// grab lat and lng from get params

@@ -5,17 +5,15 @@ go 1.17
 require (
 	github.com/apex/gateway/v2 v2.0.0
 	github.com/apex/log v1.9.0
-	github.com/aws/aws-sdk-go v1.20.6
 	github.com/aws/aws-sdk-go-v2 v1.11.2
 	github.com/aws/aws-sdk-go-v2/config v1.11.1
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.4.5
-	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.7.5
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.11.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.22.0
 )
 
 require (
-	github.com/aws/aws-lambda-go v1.27.0 // indirect
+	github.com/aws/aws-lambda-go v1.27.1 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.6.5 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.8.2 // indirect

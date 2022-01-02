@@ -12,10 +12,8 @@ import (
 	"github.com/apex/log"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
-	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 )
 
 func (s *server) add() http.HandlerFunc {
@@ -46,8 +44,8 @@ func (s *server) add() http.HandlerFunc {
 		// parse body to a record
 		var rec Record
 
-		// limit upload size to 10MB
-		r.Body = http.MaxBytesReader(w, r.Body, 10*1024*1024)
+		// limit upload size to 1MB
+		r.Body = http.MaxBytesReader(w, r.Body, 1024*1024)
 
 		err := r.ParseForm()
 		if err != nil {
@@ -80,18 +78,17 @@ func (s *server) add() http.HandlerFunc {
 
 		rec.ID = r.RemoteAddr
 		rec.Created = time.Now()
+		// Data retention is one day
 		rec.Expires = rec.Created.Add(time.Hour * 24)
 
 		// https://aws.github.io/aws-sdk-go-v2/docs/sdk-utilities/s3/
 		// Upload the audio file to S3 client s.store and get the url
-		uploader := manager.NewUploader(s.store)
-		result, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
+		audioKey := fmt.Sprintf("%s/%s/%s", rec.ID, rec.Created.Format("2006-01-02"), header.Filename)
+		putResult, err := s.store.PutObject(context.TODO(), &s3.PutObjectInput{
 			Bucket: aws.String(os.Getenv("BUCKET_NAME")),
-			// id / yyyy-mm-dd / name-of-file
-			Key:  aws.String(fmt.Sprintf("%s/%s/%s", rec.ID, rec.Created.Format("2006-01-02"), header.Filename)),
-			ACL:  types.ObjectCannedACLPublicRead,
-			Body: audioFile,
-			// set audio/x-m4a as the content type
+			Key:    aws.String(audioKey),
+			Body:   audioFile,
+			// TODO: Figure this out for Android
 			ContentType: aws.String("audio/x-m4a"),
 		})
 		if err != nil {
@@ -100,11 +97,11 @@ func (s *server) add() http.HandlerFunc {
 			return
 		}
 
-		rec.Audio = result.Location
+		rec.Audio = audioKey
 
 		log.WithFields(log.Fields{
-			"record":   rec,
-			"s3result": result,
+			"record":    rec,
+			"putResult": putResult,
 		}).Info("uploaded audio file")
 
 		av, err := attributevalue.MarshalMap(rec)
