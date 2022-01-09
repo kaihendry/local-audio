@@ -29,7 +29,7 @@
     <form action="/add" method="POST" enctype="multipart/form-data">
       <label
         >Audio
-        <input type="file" name="audio" required />
+        <input type="file" name="audio" required accept="audio/*" capture />
         <!-- accept="audio/*" does not work on Safari 15 -->
         <!-- "capture" launches camera on Safari 15 -->
       </label>
